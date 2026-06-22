@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ARQUIVO SOMBRIO — PROTOCOLO</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Oswald:wght@200;300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+.hmenu-btn {
+  position: absolute;
+  top: 16px; right: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  width: 40px; height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 600;
+  transition: background .2s, border-color .2s;
+}
+.hmenu-btn:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.22);
+}
+.hmenu-btn span {
+  display: block;
+  height: 1.5px;
+  border-radius: 2px;
+  background: #888;
+  transition: background .2s, transform .18s;
+  width: 18px;
+}
+.hmenu-btn span:nth-child(2) { width: 22px; }
+.hmenu-btn:hover span { background: #bbb; }
+
+.hmenu-drop {
+  display: none;
+  position: absolute;
+  top: 62px; right: 20px;
+  background: #161616;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 700;
+  min-width: 190px;
+}
+.hmenu-drop.open { display: block; }
+.hmenu-drop a {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: #888;
+  text-decoration: none;
+  padding: 13px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: color .18s, background .18s;
+}
+.hmenu-drop a:last-child { border-bottom: none; }
+.hmenu-drop a:hover { color: #ccc; background: rgba(255,255,255,0.04); }
+.hmenu-drop a .mico { font-size: 13px; opacity: .5; }
+  --bg:#04040a;
+  --bg2:#080810;
+  --panel:#0c0c16;
+  --panel2:#10101e;
+  --line:rgba(255,255,255,.06);
+  --line2:rgba(255,255,255,.12);
+  --text:#ddd8cc;
+  --muted:#5a5248;
+  --accent:#b8001f;
+  --accent2:#ff1a35;
+  --accent3:#ff4455;
+  --gold:#c8a84b;
+  --green:#1db870;
+  --blue:#1a6fff;
+  --dim:#1a1a28;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Courier Prime',monospace;
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:default;
+}
+
+/* grain */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:9998;
+  opacity:.5;
+}
+
+/* scanlines */
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.13) 3px,rgba(0,0,0,.13) 4px);
+  pointer-events:none;
+  z-index:9999;
+}
+
+/* ─── HEADER ─── */
+header{
+  position:relative;
+  padding:80px 20px 50px;
+  text-align:center;
+  overflow:hidden;
+  border-bottom:1px solid var(--line);
+}
+
+.header-bg{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%,rgba(184,0,31,.18),transparent),
+    radial-gradient(ellipse 40% 40% at 20% 100%,rgba(26,111,255,.06),transparent),
+    radial-gradient(ellipse 40% 40% at 80% 100%,rgba(200,168,75,.04),transparent);
+  pointer-events:none;
+}
+
+.classified-stamp{
+  position:absolute;
+  top:30px;
+  right:40px;
+  border:3px solid var(--accent);
+  padding:6px 14px;
+  font-family:'Oswald',sans-serif;
+  font-size:11px;
+  letter-spacing:6px;
+  color:var(--accent);
+  transform:rotate(12deg);
+  opacity:.4;
+  pointer-events:none;
+}
+
+.eyebrow{
+  font-family:'Oswald',sans-serif;
+  font-size:10px;
+  letter-spacing:8px;
+  text-transform:uppercase;
+  color:var(--accent2);
+  margin-bottom:18px;
+  animation:pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+
+h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(52px,10vw,110px);
+  line-height:.9;
+  letter-spacing:2px;
+  color:var(--text);
+}
+
+h1 .red{color:var(--accent2);}
+h1 .dim-word{color:var(--muted);}
+
+.header-line{
+  width:80px;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  margin:20px auto;
+}
+
+.sub{
+  font-family:'Oswald',sans-serif;
+  font-size:11px;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.terminal-boot{
+  margin-top:30px;
+  display:inline-block;
+  text-align:left;
+  background:rgba(0,0,0,.4);
+  border:1px solid var(--line2);
+  padding:16px 24px;
+  font-size:12px;
+  line-height:2;
+  color:var(--muted);
+}
+
+.terminal-boot .ok{color:var(--green);}
+.terminal-boot .warn{color:var(--gold);}
+.terminal-boot .err{color:var(--accent2);}
+
+/* ─── WRAP ─── */
+.wrap{max-width:860px;margin:auto;padding:50px 20px 120px;}
+
+/* ─── DIFFICULTY CARDS ─── */
+.diff-intro{
+  text-align:center;
+  margin-bottom:40px;
+}
+
+.diff-intro h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:32px;
+  letter-spacing:3px;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+
+.diff-intro p{
+  font-size:13px;
+  color:var(--muted);
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+.diff-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:2px;
+  margin-top:0;
+}
+
+.diff{
+  background:var(--panel);
+  border:1px solid var(--line);
+  padding:36px 28px;
+  cursor:pointer;
+  transition:all .25s;
+  position:relative;
+  overflow:hidden;
+}
+
+.diff::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.02),transparent);
+  pointer-events:none;
+}
+
+.diff::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:2px;
+  background:var(--accent);
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .3s;
+}
+
+.diff:hover{
+  background:var(--panel2);
+  border-color:var(--line2);
+  transform:translateY(-3px);
+}
+.diff:hover::after{transform:scaleX(1);}
+
+.diff-tag{
+  font-family:'Oswald',sans-serif;
+  font-size:9px;
+  letter-spacing:5px;
+  color:var(--accent);
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+
+.diff h3{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:38px;
+  letter-spacing:2px;
+  margin-bottom:14px;
+  line-height:1;
+}
+
+.diff p{
+  font-size:12px;
+  line-height:2;
+  color:var(--muted);
+}
+
+.diff-time{
+  display:inline-block;
+  margin-top:16px;
+  font-family:'Oswald',sans-serif;
+  font-size:10px;
+  letter-spacing:4px;
+  color:var(--accent);
+  border:1px solid rgba(184,0,31,.3);
+  padding:4px 10px;
+}
+
+/* ─── GAME AREA ─── */
+.hidden{display:none!important;}
+
+.hud{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:2px;
+  margin-bottom:2px;
+}
+
+.hud-box{
+  background:var(--panel);
+  border:1px solid var(--line);
+  padding:14px 18px;
+  position:relative;
+}
+
+.hud-label{
+  font-family:'Oswald',sans-serif;
+  font-size:9px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.hud-value{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:36px;
+  letter-spacing:1px;
+  line-height:1;
+}
+
+.hud-value.green{color:var(--green);}
+.hud-value.gold{color:var(--gold);}
+
+/* Timer */
+.timer-wrap{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-top:none;
+  padding:10px 18px;
+  margin-bottom:24px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.timer-label{
+  font-family:'Oswald',sans-serif;
+  font-size:9px;
+  letter-spacing:4px;
+  color:var(--muted);
+  white-space:nowrap;
+}
+
+.timer-track{
+  flex:1;
+  height:4px;
+  background:rgba(255,255,255,.05);
+  position:relative;
+  overflow:hidden;
+}
+
+.timer-fill{
+  height:100%;
+  background:var(--green);
+  transition:width 1s linear, background .3s;
+}
+
+.timer-count{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;
+  color:var(--text);
+  min-width:32px;
+  text-align:right;
+}
+
+/* Question */
+.q-area{
+  background:var(--panel);
+  border:1px solid var(--line);
+  padding:40px 36px 32px;
+  margin-bottom:2px;
+  position:relative;
+}
+
+.q-area::before{
+  content:'ARQUIVO CLASSIFICADO';
+  position:absolute;
+  top:14px;right:20px;
+  font-family:'Oswald',sans-serif;
+  font-size:8px;
+  letter-spacing:4px;
+  color:var(--accent);
+  opacity:.3;
+}
+
+.q-num{
+  font-family:'Oswald',sans-serif;
+  font-size:10px;
+  letter-spacing:5px;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:20px;
+}
+
+.question{
+  font-family:'Special Elite',cursive;
+  font-size:clamp(20px,3.5vw,28px);
+  line-height:1.6;
+  color:var(--text);
+}
+
+/* Options */
+.options-grid{
+  display:grid;
+  gap:2px;
+  margin-bottom:2px;
+}
+
+.option{
+  background:var(--panel);
+  border:1px solid var(--line);
+  padding:20px 28px;
+  cursor:pointer;
+  transition:all .2s;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  position:relative;
+  overflow:hidden;
+}
+
+.option::before{
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:3px;
+  background:var(--accent);
+  transform:scaleY(0);
+  transition:transform .2s;
+}
+
+.option-letter{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;
+  color:var(--muted);
+  min-width:22px;
+  transition:color .2s;
+}
+
+.option-text{
+  font-size:14px;
+  line-height:1.6;
+  transition:color .2s;
+}
+
+.option:hover{
+  background:var(--panel2);
+  border-color:var(--line2);
+}
+
+.option:hover::before{transform:scaleY(1);}
+.option:hover .option-letter{color:var(--accent2);}
+
+.option.correct{
+  background:rgba(29,184,112,.06);
+  border-color:rgba(29,184,112,.4);
+}
+.option.correct::before{
+  background:var(--green);
+  transform:scaleY(1);
+}
+.option.correct .option-letter{color:var(--green);}
+
+.option.wrong{
+  background:rgba(184,0,31,.08);
+  border-color:rgba(255,26,53,.3);
+}
+.option.wrong::before{
+  background:var(--accent2);
+  transform:scaleY(1);
+}
+.option.wrong .option-letter{color:var(--accent2);}
+
+.option.eliminated{
+  opacity:.2;
+  pointer-events:none;
+}
+
+/* Lifelines */
+.lifeline-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:2px;
+  margin-bottom:2px;
+}
+
+.ll-btn{
+  background:var(--panel);
+  border:1px solid var(--line);
+  color:var(--muted);
+  padding:12px 20px;
+  cursor:pointer;
+  font-family:'Oswald',sans-serif;
+  font-size:9px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  transition:all .2s;
+  flex:1;
+  min-width:140px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.ll-btn:hover{
+  background:var(--panel2);
+  border-color:var(--line2);
+  color:var(--text);
+}
+
+.ll-btn.used{
+  opacity:.2;
+  cursor:not-allowed;
+}
+
+.ll-icon{
+  font-size:16px;
+  opacity:.6;
+}
+
+/* Feedback */
+.feedback{
+  background:var(--panel);
+  border-left:3px solid var(--accent);
+  padding:28px 32px;
+  margin-top:2px;
+  display:none;
+  animation:slideUp .3s ease;
+}
+
+.feedback.correct-fb{border-left-color:var(--green);}
+
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.feedback-tag{
+  font-family:'Oswald',sans-serif;
+  font-size:9px;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  margin-bottom:12px;
+  color:var(--accent2);
+}
+
+.feedback.correct-fb .feedback-tag{color:var(--green);}
+
+.feedback-text{
+  font-size:13px;
+  line-height:2;
+  color:#b0a899;
+}
+
+.redact{
+  background:var(--text);
+  color:var(--text);
+  padding:0 3px;
+  user-select:none;
+  border-radius:1px;
+}
+
+/* Bonus badge */
+.bonus-badge{
+  display:inline-block;
+  background:rgba(200,168,75,.12);
+  border:1px solid rgba(200,168,75,.3);
+  color:var(--gold);
+  font-family:'Oswald',sans-serif;
+  font-size:9px;
+  letter-spacing:3px;
+  padding:4px 10px;
+  margin-bottom:12px;
+}
+
+/* ─── FINAL ─── */
+.final-wrap{
+  background:var(--panel);
+  border:1px solid var(--line);
+  padding:60px 40px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.final-wrap::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(184,0,31,.1),transparent);
+  pointer-events:none;
+}
+
+.grade{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:140px;
+  line-height:1;
+  color:var(--accent2);
+  margin:10px 0;
+  text-shadow:0 0 60px rgba(255,26,53,.3);
+  animation:gradeIn .5s cubic-bezier(.22,.61,.36,1) both;
+}
+
+@keyframes gradeIn{
+  from{opacity:0;transform:scale(.7);}
+  to{opacity:1;transform:scale(1);}
+}
+
+.rank-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:28px;
+  letter-spacing:5px;
+  color:var(--gold);
+  margin-bottom:30px;
+}
+
+.final-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:2px;
+  margin:30px 0;
+}
+
+.stat-box{
+  background:var(--dim);
+  padding:20px;
+  border:1px solid var(--line);
+}
+
+.stat-label{
+  font-family:'Oswald',sans-serif;
+  font-size:9px;
+  letter-spacing:4px;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+
+.stat-value{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:32px;
+  color:var(--text);
+}
+
+.restart-btn{
+  display:inline-block;
+  margin-top:30px;
+  background:transparent;
+  border:1px solid rgba(184,0,31,.5);
+  color:var(--text);
+  padding:16px 40px;
+  cursor:pointer;
+  font-family:'Oswald',sans-serif;
+  font-size:10px;
+  letter-spacing:6px;
+  text-transform:uppercase;
+  transition:all .25s;
+}
+
+.restart-btn:hover{
+  background:rgba(184,0,31,.15);
+  border-color:var(--accent2);
+}
+
+/* Rank bar */
+.rank-bar{
+  display:flex;
+  gap:4px;
+  justify-content:center;
+  margin:20px 0;
+}
+
+.rank-pip{
+  width:40px;
+  height:4px;
+  background:var(--line);
+}
+
+.rank-pip.lit{background:var(--accent2);}
+
+/* flash effect */
+.flash-correct{animation:flashGreen .4s ease;}
+.flash-wrong{animation:flashRed .4s ease;}
+
+@keyframes flashGreen{
+  0%{background:rgba(29,184,112,.2);}
+  100%{background:var(--bg);}
+}
+@keyframes flashRed{
+  0%{background:rgba(184,0,31,.2);}
+  100%{background:var(--bg);}
+}
+
+/* timer critical */
+.timer-fill.critical{background:var(--accent2)!important;}
+.timer-count.critical{color:var(--accent2);}
+
+/* Progress dots */
+.progress-dots{
+  display:flex;
+  gap:4px;
+  flex-wrap:wrap;
+  padding:14px 18px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-bottom:none;
+}
+
+.dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--line2);
+  transition:background .3s;
+}
+.dot.done-correct{background:var(--green);}
+.dot.done-wrong{background:var(--accent);}
+.dot.current{background:var(--gold);animation:blink .8s ease-in-out infinite;}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-bg"></div>
+  <div class="classified-stamp">TOP SECRET</div>
+
+  <div class="eyebrow">// operação arquivo sombrio // acesso restrito //</div>
+
+  <h1>
+    PROTOCOLO<br>
+    <span class="red">DE INTERROGAÇÃO</span>
+  </h1>
+
+  <div class="header-line"></div>
+
+  <div class="sub">15 arquivos desclassificados aguardando validação</div>
+
+  <div class="terminal-boot" id="termBoot">
+    <span class="ok">✓</span> CONEXÃO ESTABELECIDA — SERVIDOR RESTRITO<br>
+    <span class="ok">✓</span> CREDENCIAIS VERIFICADAS — CLEARANCE VERMELHO<br>
+    <span class="warn">⚠</span> AVISO: CONTEÚDO CLASSIFICADO EM ACESSO<br>
+    <span class="err">█</span> STATUS: <span style="color:#ff1a35;font-weight:700">AUTORIZADO — PROSSIGA COM CAUTELA</span>
+  </div>
+</header>
+
+<!-- Botão menu hambúrguer -->
+<button class="hmenu-btn" id="hmenuBtn" aria-label="Menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+<nav class="hmenu-drop" id="hmenuDrop" aria-hidden="true">
+  <a href="https://juliano212.github.io/ABIN-Confidencial/">ABIN Confidencial</a>
+
+  <a href="https://juliano212.github.io/Arquivo-Confidencial/">Arquivo Confidencial</a>
+</nav>
+
+<div class="wrap">
+
+  <!-- INTRO -->
+  <div id="intro">
+    <div class="diff-intro">
+      <h2>Selecione Nível de Acesso</h2>
+      <p>cada nível altera o tempo por arquivo</p>
+    </div>
+    <div class="diff-grid">
+      <div class="diff" onclick="startGame('easy')">
+        <div class="diff-tag">// nível 1 //</div>
+        <h3>INICIADO</h3>
+        <p>Acesso básico a arquivos desclassificados. Para agentes em treinamento.</p>
+        <div class="diff-time">30s / arquivo</div>
+      </div>
+      <div class="diff" onclick="startGame('medium')">
+        <div class="diff-tag">// nível 2 //</div>
+        <h3>AGENTE</h3>
+        <p>Pressão moderada. Bônus por sequência elevado. Operações activas.</p>
+        <div class="diff-time">20s / arquivo</div>
+      </div>
+      <div class="diff" onclick="startGame('hard')">
+        <div class="diff-tag">// nível 3 //</div>
+        <h3>INFILTRADO</h3>
+        <p>Protocolo de emergência. Sem margem de erro. Apenas os melhores sobrevivem.</p>
+        <div class="diff-time">12s / arquivo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div id="game" class="hidden">
+
+    <div class="hud">
+      <div class="hud-box">
+        <div class="hud-label">Pontuação</div>
+        <div class="hud-value green" id="score">0</div>
+      </div>
+      <div class="hud-box" style="text-align:center;">
+        <div class="hud-label">Sequência</div>
+        <div class="hud-value gold" id="streak">×0</div>
+      </div>
+      <div class="hud-box" style="text-align:right;">
+        <div class="hud-label">Arquivo</div>
+        <div class="hud-value" id="progress">1 / 15</div>
+      </div>
+    </div>
+
+    <div class="progress-dots" id="progressDots"></div>
+
+    <div class="timer-wrap">
+      <span class="timer-label">TEMPO RESTANTE</span>
+      <div class="timer-track">
+        <div class="timer-fill" id="timerFill"></div>
+      </div>
+      <span class="timer-count" id="timerCount">30</span>
+    </div>
+
+    <div class="q-area">
+      <div class="q-num" id="qNum">ARQUIVO 01 — CLASSIFICAÇÃO MÁXIMA</div>
+      <div class="question" id="question"></div>
+    </div>
+
+    <div class="options-grid" id="options"></div>
+
+    <div class="lifeline-row">
+      <button class="ll-btn" id="btn50" onclick="fifty()">
+        <span class="ll-icon">✂</span> Eliminar 2 opções
+      </button>
+      <button class="ll-btn" id="btnSkip" onclick="skip()">
+        <span class="ll-icon">↷</span> Pular arquivo
+      </button>
+      <button class="ll-btn" id="btnTime" onclick="extraTime()">
+        <span class="ll-icon">⧖</span> +15 segundos
+      </button>
+    </div>
+
+    <div class="feedback" id="feedback">
+      <div class="feedback-tag" id="feedbackTag"></div>
+      <div class="feedback-text" id="feedbackText"></div>
+    </div>
+
+  </div>
+
+  <!-- FINAL -->
+  <div id="final" class="hidden">
+    <div class="final-wrap">
+      <div class="eyebrow">resultado final — operação concluída</div>
+      <div class="grade" id="grade"></div>
+      <div class="rank-title" id="rank"></div>
+      <div class="rank-bar" id="rankBar"></div>
+      <div class="final-stats">
+        <div class="stat-box">
+          <div class="stat-label">Pontuação</div>
+          <div class="stat-value" id="finalScore">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Acertos</div>
+          <div class="stat-value" id="finalHits">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Precisão</div>
+          <div class="stat-value" id="finalAcc">0%</div>
+        </div>
+      </div>
+      <button class="restart-btn" onclick="location.reload()">↺ Reiniciar Investigação</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    q:"Qual programa secreto da CIA realizava experimentos com LSD e controle mental em civis sem consentimento?",
+    opts:[
+      {t:"Operação MKUltra",c:true},
+      {t:"Projeto Northwoods",c:false},
+      {t:"Projeto Blue Book",c:false},
+      {t:"Operação Pegasus",c:false}
+    ],
+    e:"O MKUltra foi um programa real da CIA iniciado nos anos 1950. Documentos desclassificados em 1977 confirmaram testes psicológicos secretos com LSD e outras drogas em sujeitos não informados. <span class='redact'>██ ████████ ████████████████</span>"
+  },
+  {
+    q:"Quem vazou documentos secretos revelando os programas globais de vigilância da NSA em 2013?",
+    opts:[
+      {t:"Julian Assange",c:false},
+      {t:"Edward Snowden",c:true},
+      {t:"Chelsea Manning",c:false},
+      {t:"Bob Lazar",c:false}
+    ],
+    e:"Edward Snowden, ex-contratado da NSA, divulgou documentos que revelaram sistemas massivos de espionagem digital incluindo PRISM, XKeyscore e outros programas de vigilância em larga escala."
+  },
+  {
+    q:"Qual operação propunha ataques de falsa bandeira contra civis americanos para justificar uma invasão a Cuba?",
+    opts:[
+      {t:"Operação Northwoods",c:true},
+      {t:"Operação Paperclip",c:false},
+      {t:"Operação Mockingbird",c:false},
+      {t:"Operação Phoenix",c:false}
+    ],
+    e:"A Operação Northwoods foi proposta em 1962 pelo Estado-Maior Conjunto dos EUA. Os planos incluíam simular ataques terroristas e afundar navios para culpar Cuba. O presidente Kennedy recusou a proposta."
+  },
+  {
+    q:"Qual projeto investigava oficialmente avistamentos de OVNIs pela Força Aérea dos EUA entre 1952 e 1969?",
+    opts:[
+      {t:"Projeto Blue Book",c:true},
+      {t:"Projeto Aurora",c:false},
+      {t:"Projeto Majestic 12",c:false},
+      {t:"Operação Pegasus",c:false}
+    ],
+    e:"O Projeto Blue Book analisou 12.618 relatos de OVNIs. Ao encerrar, 701 casos permaneceram 'não identificados'. Críticos apontam que o projeto era mais uma operação de relações públicas do que uma investigação séria."
+  },
+  {
+    q:"Qual plataforma publicou centenas de milhares de documentos diplomáticos e militares secretos a partir de 2010?",
+    opts:[
+      {t:"WikiLeaks",c:true},
+      {t:"The Intercept",c:false},
+      {t:"Shadow Brokers",c:false},
+      {t:"CryptoDome",c:false}
+    ],
+    e:"O WikiLeaks, fundado por Julian Assange, publicou os 'Collateral Murder', os Afghan War Diaries e os Diplomatic Cables, expondo operações militares e comunicações diplomáticas de alto nível."
+  },
+  {
+    q:"Qual operação secreta trouxe cientistas e engenheiros nazistas para os EUA após a Segunda Guerra Mundial?",
+    opts:[
+      {t:"Operação Paperclip",c:true},
+      {t:"Operação Condor",c:false},
+      {t:"Operação Sunrise",c:false},
+      {t:"Operação Overlord",c:false}
+    ],
+    e:"A Operação Paperclip recrutou mais de 1.600 cientistas alemães, incluindo Wernher von Braun. O programa foi em parte ocultado ao presidente Truman, pois muitos recrutados tinham histórico nazista documentado."
+  },
+  {
+    q:"Qual audiência histórica no Congresso dos EUA em 2023 revelou alegações sobre programas secretos de UAPs e materiais não humanos?",
+    opts:[
+      {t:"Audiência UAP do Congresso",c:true},
+      {t:"Cimeira de Divulgação de Roswell",c:false},
+      {t:"Comissão de Fenômenos Aéreos",c:false},
+      {t:"Painel Técnico AATIP",c:false}
+    ],
+    e:"Em julho de 2023, ex-oficiais militares e de inteligência testemunharam perante o Congresso alegando a existência de programas secretos de recuperação de materiais de origem não humana. O depoente David Grusch citou múltiplas fontes confidenciais."
+  },
+  {
+    q:"Qual empresa foi acusada de manipular eleições usando dados psicológicos de 87 milhões de usuários do Facebook?",
+    opts:[
+      {t:"Cambridge Analytica",c:true},
+      {t:"SCL Group",c:false},
+      {t:"Palantir Technologies",c:false},
+      {t:"Psy-Group",c:false}
+    ],
+    e:"A Cambridge Analytica, contratada pela campanha de Trump em 2016, utilizou dados extraídos indevidamente do Facebook para criar perfis psicológicos e direcionar propaganda personalizada a eleitores indecisos."
+  },
+  {
+    q:"A morte de Jeffrey Epstein em 2019 foi oficialmente classificada como suicídio. Qual elemento gerou maior controvérsia?",
+    opts:[
+      {t:"Câmeras de segurança desligadas e guardas dormindo",c:true},
+      {t:"Ausência de impressões digitais no local",c:false},
+      {t:"Documentos de autópsia destruídos",c:false},
+      {t:"Testemunhas relocadas secretamente",c:false}
+    ],
+    e:"As câmeras de segurança na cela de Epstein falharam na noite da morte. Os dois guardas responsáveis adormeceram e falsificaram registros. O médico legista forense Michael Baden contestou a conclusão de suicídio apontando lesões consistentes com estrangulamento."
+  },
+  {
+    q:"Qual programa da NSA coletava metadados de comunicações digitais de praticamente todos os americanos?",
+    opts:[
+      {t:"PRISM",c:false},
+      {t:"XKeyscore",c:false},
+      {t:"STELLARWIND",c:true},
+      {t:"MYSTIC",c:false}
+    ],
+    e:"O STELLARWIND, iniciado após o 11/9, coletava metadados em massa de ligações e comunicações eletrônicas sem mandado judicial. O programa foi mantido em segredo do próprio FISA Court por anos antes de ser parcialmente revelado."
+  },
+  {
+    q:"O Projeto PRISM, revelado por Snowden, coletava dados diretamente dos servidores de quais empresas?",
+    opts:[
+      {t:"Google, Facebook, Microsoft e Apple",c:true},
+      {t:"Amazon, IBM, Oracle e Dell",c:false},
+      {t:"Twitter, Snapchat, LinkedIn e Telegram",c:false},
+      {t:"AT&T, Verizon, T-Mobile e Sprint",c:false}
+    ],
+    e:"O PRISM acessava diretamente os servidores de grandes empresas de tecnologia incluindo Google, Facebook (Meta), Microsoft, Apple, Yahoo, AOL, Skype e PalTalk. As empresas inicialmente negaram qualquer conhecimento do programa."
+  },
+  {
+    q:"Em Dallas, 1963, quem foi assassinado em circunstâncias que geraram décadas de teorias e arquivos ainda classificados?",
+    opts:[
+      {t:"John F. Kennedy",c:true},
+      {t:"Robert Kennedy",c:false},
+      {t:"Martin Luther King Jr.",c:false},
+      {t:"Malcolm X",c:false}
+    ],
+    e:"O assassinato de JFK gerou a Comissão Warren, que concluiu que Lee Harvey Oswald agiu sozinho. Arquivos da CIA sobre o caso ainda permanecem parcialmente classificados décadas depois. <span class='redact'>████ ██████████ ████</span>"
+  },
+  {
+    q:"Qual base militar no estado de Nevada foi mantida em total sigilo pelo governo americano por décadas?",
+    opts:[
+      {t:"Área 51",c:true},
+      {t:"Fort Detrick",c:false},
+      {t:"White Sands",c:false},
+      {t:"Pine Gap",c:false}
+    ],
+    e:"A Área 51, oficialmente reconhecida pela CIA apenas em 2013, foi usada para desenvolver aeronaves secretas como o U-2 e SR-71. O sigilo extremo alimentou teorias sobre pesquisa extraterrestre. Trabalhadores assinaramtermos de confidencialidade vitalícios."
+  },
+  {
+    q:"Qual programa do FBI entre 1956–1971 monitorava e infiltrava grupos políticos domésticos considerados subversivos?",
+    opts:[
+      {t:"COINTELPRO",c:true},
+      {t:"Operação Chaos",c:false},
+      {t:"Programa Huston",c:false},
+      {t:"Projeto MINARETentura",c:false}
+    ],
+    e:"O COINTELPRO (Counter Intelligence Program) do FBI infiltrou o Partido Comunista, o Ku Klux Klan, o Partido dos Panteras Negras e grupos pelos direitos civis. Táticas incluíam cartas anônimas, provocações e colaboração com criminosos."
+  },
+  {
+    q:"Qual projeto secreto desenvolveu a primeira bomba atômica durante a Segunda Guerra Mundial?",
+    opts:[
+      {t:"Projeto Manhattan",c:true},
+      {t:"Projeto Trinity",c:false},
+      {t:"Projeto Tubealloy",c:false},
+      {t:"Operação Silverplate",c:false}
+    ],
+    e:"O Projeto Manhattan reuniu mais de 130.000 pessoas em instalações secretas em Los Alamos, Oak Ridge e Hanford. O projeto custou cerca de 2 bilhões de dólares. Muitos cientistas envolvidos nunca souberam do propósito completo de seu trabalho."
+  }
+];
+
+let questions = [];
+let results = [];
+let current = 0;
+let score = 0;
+let streak = 0;
+let maxStreak = 0;
+let timer;
+let time = 30;
+let maxTime = 30;
+let totalCorrect = 0;
+
+let used50 = false;
+let usedSkip = false;
+let usedTime = false;
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function prepareQuestions(){
+  const shuffled = shuffle(ALL_QUESTIONS);
+  questions = shuffled.map(q => {
+    const opts = shuffle(q.opts);
+    const correctIndex = opts.findIndex(o => o.c);
+    return {
+      q: q.q,
+      o: opts.map(o => o.t),
+      a: correctIndex,
+      e: q.e
+    };
+  });
+}
+
+function startGame(level){
+  if(level==='easy') maxTime=30;
+  if(level==='medium') maxTime=20;
+  if(level==='hard') maxTime=12;
+
+  prepareQuestions();
+
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+
+  buildDots();
+  loadQuestion();
+}
+
+function buildDots(){
+  const dots = document.getElementById('progressDots');
+  dots.innerHTML = '';
+  questions.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0?' current':'');
+    d.id = 'dot'+i;
+    dots.appendChild(d);
+  });
+}
+
+function updateDots(index, result){
+  const d = document.getElementById('dot'+index);
+  if(!d) return;
+  d.classList.remove('current');
+  d.classList.add(result==='correct'?'done-correct':'done-wrong');
+  const next = document.getElementById('dot'+(index+1));
+  if(next) next.classList.add('current');
+}
+
+function loadQuestion(){
+  clearInterval(timer);
+  document.getElementById('feedback').style.display='none';
+
+  const q = questions[current];
+
+  document.getElementById('qNum').textContent =
+    `ARQUIVO ${String(current+1).padStart(2,'0')} — CLASSIFICAÇÃO MÁXIMA`;
+
+  document.getElementById('question').innerHTML = q.q;
+
+  document.getElementById('progress').textContent =
+    `${current+1} / ${questions.length}`;
+
+  const optionsEl = document.getElementById('options');
+  optionsEl.innerHTML = '';
+
+  const letters = ['A','B','C','D'];
+  q.o.forEach((opt,i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `
+      <span class="option-letter">${letters[i]}</span>
+      <span class="option-text">${opt}</span>`;
+    div.onclick = () => answer(i, div);
+    optionsEl.appendChild(div);
+  });
+
+  time = maxTime;
+  updateTimer();
+
+  timer = setInterval(() => {
+    time--;
+    updateTimer();
+    if(time <= 0){ clearInterval(timer); timeout(); }
+  }, 1000);
+}
+
+function updateTimer(){
+  const fill = document.getElementById('timerFill');
+  const count = document.getElementById('timerCount');
+  const pct = (time/maxTime)*100;
+  fill.style.width = pct+'%';
+  count.textContent = time;
+
+  if(time <= Math.ceil(maxTime*0.25)){
+    fill.classList.add('critical');
+    count.classList.add('critical');
+  } else {
+    fill.classList.remove('critical');
+    count.classList.remove('critical');
+  }
+}
+
+function answer(index, element){
+  clearInterval(timer);
+  const q = questions[current];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o => o.style.pointerEvents='none');
+
+  const correct = index === q.a;
+
+  if(correct){
+    element.classList.add('correct');
+    streak++;
+    if(streak>maxStreak) maxStreak=streak;
+    const bonus = 100 * streak;
+    score += bonus;
+    totalCorrect++;
+    results.push('correct');
+
+    const bonusHtml = streak>1
+      ? `<div class="bonus-badge">× ${streak} BÔNUS DE SEQUÊNCIA — +${bonus} PTS</div>`
+      : '';
+
+    document.getElementById('feedbackTag').textContent = '// ARQUIVO VALIDADO //';
+    document.getElementById('feedbackText').innerHTML = bonusHtml + q.e;
+
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback correct-fb';
+    fb.style.display = 'block';
+
+    document.body.classList.add('flash-correct');
+    setTimeout(()=>document.body.classList.remove('flash-correct'),400);
+
+  } else {
+    element.classList.add('wrong');
+    opts[q.a].classList.add('correct');
+    streak = 0;
+    results.push('wrong');
+
+    document.getElementById('feedbackTag').textContent = '// INFORMAÇÃO COMPROMETIDA //';
+    document.getElementById('feedbackText').innerHTML = q.e;
+
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback';
+    fb.style.display = 'block';
+
+    document.body.classList.add('flash-wrong');
+    setTimeout(()=>document.body.classList.remove('flash-wrong'),400);
+  }
+
+  document.getElementById('score').textContent = score;
+  document.getElementById('streak').textContent = '×'+streak;
+
+  updateDots(current, correct?'correct':'wrong');
+
+  setTimeout(nextQuestion, 3000);
+}
+
+function timeout(){
+  streak = 0;
+  results.push('wrong');
+  document.getElementById('feedbackTag').textContent = '// TEMPO ESGOTADO //';
+  document.getElementById('feedbackText').innerHTML =
+    'Sessão expirada. O arquivo foi bloqueado automaticamente pelo protocolo de segurança. <span class="redact">███████████</span>';
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.style.display = 'block';
+
+  document.getElementById('streak').textContent = '×0';
+
+  updateDots(current, 'wrong');
+  setTimeout(nextQuestion, 2500);
+}
+
+function nextQuestion(){
+  current++;
+  if(current >= questions.length) finish();
+  else loadQuestion();
+}
+
+function fifty(){
+  if(used50) return;
+  used50 = true;
+  document.getElementById('btn50').classList.add('used');
+
+  const q = questions[current];
+  const opts = [...document.querySelectorAll('.option')];
+  let removed = 0;
+
+  for(let i = 0; i < opts.length; i++){
+    if(i !== q.a && removed < 2){
+      opts[i].classList.add('eliminated');
+      removed++;
+    }
+  }
+}
+
+function skip(){
+  if(usedSkip) return;
+  usedSkip = true;
+  document.getElementById('btnSkip').classList.add('used');
+  clearInterval(timer);
+  results.push('skip');
+  updateDots(current, 'wrong');
+  nextQuestion();
+}
+
+function extraTime(){
+  if(usedTime) return;
+  usedTime = true;
+  document.getElementById('btnTime').classList.add('used');
+  time += 15;
+  maxTime += 15;
+  updateTimer();
+}
+
+function finish(){
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('final').classList.remove('hidden');
+
+  let grade='F', rank='RECRUTA DESCARTÁVEL', pips=1;
+
+  if(score>500){grade='D';rank='OBSERVADOR';pips=2;}
+  if(score>1000){grade='C';rank='ANALISTA DE CAMPO';pips=3;}
+  if(score>1800){grade='B';rank='AGENTE OPERACIONAL';pips=4;}
+  if(score>2800){grade='A';rank='AGENTE DE ELITE';pips=5;}
+  if(score>4000){grade='S';rank='ARQUITETO DAS SOMBRAS';pips=6;}
+
+  document.getElementById('grade').textContent = grade;
+  document.getElementById('rank').textContent = rank;
+  document.getElementById('finalScore').textContent = score.toLocaleString();
+  document.getElementById('finalHits').textContent = totalCorrect + '/' + questions.length;
+  const acc = Math.round((totalCorrect/questions.length)*100);
+  document.getElementById('finalAcc').textContent = acc + '%';
+
+  const bar = document.getElementById('rankBar');
+  bar.innerHTML = '';
+  for(let i=0;i<6;i++){
+    const p = document.createElement('div');
+    p.className = 'rank-pip' + (i<pips?' lit':'');
+    bar.appendChild(p);
+  }
+}
+
+// ===== menu hambúrguer: toggle e comportamento de fechamento =====
+(function(){
+  const btn = document.getElementById('hmenuBtn');
+  const drop = document.getElementById('hmenuDrop');
+
+  if(!btn || !drop) return;
+
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    const opened = drop.classList.toggle('open');
+    btn.classList.toggle('open', opened);
+    drop.setAttribute('aria-hidden', opened ? 'false' : 'true');
+  });
+
+  // fechar ao clicar fora
+  document.addEventListener('click', ()=>{
+    if(drop.classList.contains('open')){
+      drop.classList.remove('open');
+      btn.classList.remove('open');
+      drop.setAttribute('aria-hidden','true');
+    }
+  });
+
+  // fechar com ESC
+  document.addEventListener('keydown',(ev)=>{
+    if(ev.key === 'Escape'){
+      drop.classList.remove('open');
+      btn.classList.remove('open');
+      drop.setAttribute('aria-hidden','true');
+    }
+  });
+})();
+
+</script>
+</body>
+</html>
